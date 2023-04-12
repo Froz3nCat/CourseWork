@@ -96,7 +96,7 @@ namespace CourseWork
 
         private void workers_form_Load(object sender, EventArgs e)
         {
-
+            
             sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=E:\С\CourseWork\CourseWork\workers_database.mdf;Integrated Security=True");
             sqlConnection.Open();
             LoadDataWorkers();
