@@ -11,34 +11,40 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 
-
 namespace CourseWork
 {
     public partial class workers_form : Form
     {
      
-        //ccc
-        private SqlConnection sqlConnection = null;
+        private SqlConnection sqlConnection = null; //о
         private SqlCommandBuilder sqlCommandBuilder = null;
         private SqlDataAdapter sqlDataAdapter = null;
         private SqlCommand sqlCommand = null;
         private DataSet dataSet = null;
-        private bool newRowAdd = false;
-        private bool IsInserted = true;
         private string combo_value = null;
+        private string choosen_date;
+        private int date_row;
+        private int date_col;
         public workers_form()
         {
-
             InitializeComponent();
-            
         }
+
         void sqlCommandExecute(string sql_command)
         {
-            sqlCommand = sqlConnection.CreateCommand();
-            sqlCommand.CommandText = sql_command;
-            sqlCommand.ExecuteNonQuery();
+            try
+            {
+                sqlCommand = sqlConnection.CreateCommand();
+                sqlCommand.CommandText = sql_command;
+                sqlCommand.ExecuteNonQuery();
+            }
+
+            catch(Exception ex) {
+                MessageBox.Show(ex.Message, "ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
         }
+
         private void LoadDataWorkers()
         {
             try
@@ -48,7 +54,6 @@ namespace CourseWork
                 sqlCommandBuilder.GetInsertCommand();
                 sqlCommandBuilder.GetUpdateCommand();
                 sqlCommandBuilder.GetDeleteCommand();
-                
                 dataSet = new DataSet();
                 sqlDataAdapter.Fill(dataSet, "Workers");
                 dataGridView1.DataSource = dataSet.Tables["Workers"];
@@ -59,7 +64,6 @@ namespace CourseWork
                     dataGridView1[7, i] = linkCell;
                 }
                 
-                
             }
             catch(Exception ex) 
             {
@@ -67,14 +71,13 @@ namespace CourseWork
             }
 
         }
+
         private void ReLoadDataWorkers()
         {
             try
             {
                 dataSet.Tables["Workers"].Clear();  
-
                 sqlDataAdapter.Fill(dataSet, "Workers");
-
                 dataGridView1.DataSource = dataSet.Tables["Workers"];
 
                 for (int i = 0; i < dataGridView1.RowCount; i++)
@@ -82,6 +85,7 @@ namespace CourseWork
                     DataGridViewLinkCell linkCell = new DataGridViewLinkCell();
                     dataGridView1[7, i] = linkCell;
                 }
+            
             }
             catch (Exception ex)
             {
@@ -89,26 +93,21 @@ namespace CourseWork
             }
 
         }
-        private void playSimpleSound()
-        {
-        }
 
         private void workers_form_Load(object sender, EventArgs e)
         {
-            
+
             sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=E:\С\CourseWork\CourseWork\workers_database.mdf;Integrated Security=True");
             sqlConnection.Open();
-
             LoadDataWorkers();
-            comboBox1.SelectedItem = "-";
-            
-            
-        }
 
+            comboBox1.SelectedItem = "-";
+            textBox2.ReadOnly = true;
+
+        }
         private void обновитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ReLoadDataWorkers();
-
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -125,20 +124,12 @@ namespace CourseWork
                         {
                             int rowIndex = e.RowIndex;
                             string id = dataGridView1.Rows[rowIndex].Cells["Id"].Value.ToString();
-                            string sqlExec = "DELETE FROM Goods WHERE Id =" + id;
-                            //MessageBox.Show("ID", id);
+                            string sqlExec = "DELETE FROM Workers WHERE Id =" + id;
+                            
                             sqlCommandExecute(sqlExec);
-                            /*
-                            int rowIndex = e.RowIndex;
-
-                            dataGridView1.Rows.RemoveAt(rowIndex);
-
-                            dataSet.Tables["Workers"].Rows[rowIndex].Delete();
-                            sqlDataAdapter.Update(dataSet, "Workers");
-                            */
                         }
                     }
-
+                    /*
                     else if (task == "Insert")
                     {
 
@@ -163,17 +154,15 @@ namespace CourseWork
 
                         sqlDataAdapter.Update(dataSet, "Workers");
 
-                        newRowAdd = false;
                         
-                       
+         
                     }
+                    */
 
                     else if (task == "Update")
                     {
-
                         int r = e.RowIndex; 
                      
-                       
                         dataSet.Tables["Workers"].Rows[r]["ФИО"] = dataGridView1.Rows[r].Cells["ФИО"].Value;
                         dataSet.Tables["Workers"].Rows[r]["Должность"] = dataGridView1.Rows[r].Cells["Должность"].Value;
                         dataSet.Tables["Workers"].Rows[r]["Тел.номер"] = dataGridView1.Rows[r].Cells["Тел.номер"].Value;
@@ -187,6 +176,7 @@ namespace CourseWork
 
                     LoadDataWorkers();                
                 }
+               
             }
             catch(Exception ex)
             {
@@ -195,22 +185,15 @@ namespace CourseWork
         }
 
         
-         private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             try
             {
-
-
-                newRowAdd = true;                  
                 int rowIndex = dataGridView1.SelectedCells[0].RowIndex;
-
                 DataGridViewRow editingTow = dataGridView1.Rows[rowIndex];
                 DataGridViewLinkCell linkCell = new DataGridViewLinkCell();
-
                 dataGridView1[7, rowIndex] = linkCell;
                 editingTow.Cells["Command"].Value = "Update";
-                
-
             }
             catch(Exception ex)
             {
@@ -222,11 +205,8 @@ namespace CourseWork
         {
             try
             {
-              
-                sqlDataAdapter.Update(dataSet, "Workers");
                 
-                
-                
+                sqlDataAdapter.Update(dataSet, "Workers");   
             }
             catch (Exception ex)
             {
@@ -271,24 +251,16 @@ namespace CourseWork
                     textBox2.ReadOnly = false;
                     textBox2.Text = "";
                     break;
-
             }
         }
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
             try
             {
-                
-
                 if (combo_value != null)
                 {
                     (dataGridView1.DataSource as DataTable).DefaultView.RowFilter = $"CONVERT({combo_value}, System.String) LIKE '%{textBox2.Text}%'";
-
                 }
-                
-
-
-
             }
             catch (Exception ex)
             {
@@ -307,6 +279,45 @@ namespace CourseWork
         private void workers_form_FormClosed(object sender, FormClosedEventArgs e)
         {
             
+        }
+
+        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == 6 && e.RowIndex != dataGridView1.RowCount-1)
+            {
+                
+                date_col = e.ColumnIndex;
+                date_row = e.RowIndex;
+                int x = Cursor.Position.X;
+                int y = Cursor.Position.Y;
+                int formx = this.Location.X;
+                int formy = this.Location.Y;
+                monthCalendar1.Location = new Point(x - formx-20, y - formy-20);
+                monthCalendar1.Visible = true;
+                monthCalendar1.Enabled = true;
+
+            }
+            else
+            {
+                monthCalendar1.Visible = false;
+                monthCalendar1.Enabled = false;
+            }
+        }
+
+       
+        private void monthCalendar1_DateSelected(object sender, DateRangeEventArgs e)
+        {
+
+            if (monthCalendar1.SelectionRange.Start <= monthCalendar1.TodayDate)
+            {
+                dataGridView1.Rows[date_row].Cells[date_col].Value = monthCalendar1.SelectionRange.Start.ToShortDateString();
+                monthCalendar1.Visible = false;
+                monthCalendar1.Enabled = false;
+            }
+            else
+            {
+                MessageBox.Show("Невозможно выбрать дату. Выбранная вами дата еще не наступила.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

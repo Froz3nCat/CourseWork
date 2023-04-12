@@ -25,6 +25,10 @@ namespace CourseWork
         private SqlDataReader sqlDataReader = null;
         private List<string[]> rows;
         private string combo_value = null;
+        private string date = null;
+        private int date_col = 0;
+        private int date_row = 0;
+
         public goods_form()
         {
             InitializeComponent();
@@ -64,7 +68,7 @@ namespace CourseWork
             }
 
         }
-        
+
         private void ReLoadDataGoods()
         {
             try
@@ -103,13 +107,13 @@ namespace CourseWork
 
                         if (MessageBox.Show("Удалить выбранную строку?", "Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                         {
-                            
+
                             int rowIndex = e.RowIndex;
                             string id = dataGridView1.Rows[rowIndex].Cells["Id"].Value.ToString();
-                            string sqlExec = "DELETE FROM Goods WHERE Id =" + id ;
+                            string sqlExec = "DELETE FROM Goods WHERE Id =" + id;
                             //MessageBox.Show("ID", id);
                             sqlCommandExecute(sqlExec);
-                            
+
                             /*
                             dataGridView1.Rows.RemoveAt(rowIndex);
 
@@ -195,13 +199,13 @@ namespace CourseWork
 
         private void goods_form1_Load(object sender, EventArgs e)
         {
-            
+
             sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=E:\С\CourseWork\CourseWork\workers_database.mdf;Integrated Security=True");
             sqlConnection.Open();
-            
+
             LoadDataGoods();
             comboBox1.SelectedItem = "-";
-            
+
         }
 
         private void обновитьToolStripMenuItem_Click(object sender, EventArgs e)
@@ -216,7 +220,8 @@ namespace CourseWork
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
-            switch(comboBox1.SelectedIndex){
+            switch (comboBox1.SelectedIndex)
+            {
                 case 0:
                     combo_value = null;
                     textBox2.ReadOnly = true;
@@ -239,10 +244,10 @@ namespace CourseWork
                     textBox2.ReadOnly = false;
                     textBox2.Text = "";
                     break;
-                    
- 
+
+
             }
-            
+
         }
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
@@ -258,7 +263,7 @@ namespace CourseWork
 
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -275,6 +280,46 @@ namespace CourseWork
             {
                 MessageBox.Show("Выберите критерии сортировки", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+        }
+
+        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == 5 && e.RowIndex != dataGridView1.RowCount - 1)
+            {
+
+                date_col = e.ColumnIndex;
+                date_row = e.RowIndex;
+                int x = Cursor.Position.X;
+                int y = Cursor.Position.Y;
+                int formx = this.Location.X;
+                int formy = this.Location.Y;
+                monthCalendar1.Location = new Point(x - formx - 20, y - formy - 20);
+                monthCalendar1.Visible = true;
+                monthCalendar1.Enabled = true;
+                
+
+            }
+            else
+            {
+                monthCalendar1.Visible = false;
+                monthCalendar1.Enabled = false;
+            }
+        }
+
+        private void monthCalendar1_DateSelected(object sender, DateRangeEventArgs e)
+        {
+            
+            if (monthCalendar1.SelectionRange.Start <= monthCalendar1.TodayDate) 
+            {
+                dataGridView1.Rows[date_row].Cells[date_col].Value = monthCalendar1.SelectionRange.Start.ToShortDateString();
+                monthCalendar1.Visible = false;
+                monthCalendar1.Enabled = false;
+            }
+            else
+            {
+                MessageBox.Show("Невозможно выбрать дату. Выбранная вами дата еще не наступила.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            
         }
     }
 }

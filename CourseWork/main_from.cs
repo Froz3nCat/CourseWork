@@ -11,27 +11,25 @@ using System.Windows.Forms;
 
 namespace CourseWork
 {
-    public partial class Form1 : Form
+    public partial class main_form : Form
     {
         
-        public Form1()
+        public main_form()
         {
             InitializeComponent();
         }
 
         private void w_button_Click(object sender, EventArgs e)
         {
-
             workers_form wf = new workers_form();
             wf.StartPosition = FormStartPosition.CenterScreen;
             wf.Show();
-
-            
-
         }
 
         private void Form1_Load(object sender, EventArgs e)
-        {            MessageBox.Show("'Курсовой проект' \n Создатель: Азаматов Дмитрий Алексеевич", "Курсовой проект \"Inventory manager\"", MessageBoxButtons.OK, MessageBoxIcon.Question);
+        {
+          
+
         }
 
         private void g_button_Click(object sender, EventArgs e)
@@ -41,8 +39,6 @@ namespace CourseWork
             gf.Show();
 
             
-        }
-
-       
+        }       
     }
 }
