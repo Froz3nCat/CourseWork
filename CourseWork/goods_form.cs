@@ -15,20 +15,14 @@ namespace CourseWork
     public partial class goods_form : Form
     {
         private SqlConnection sqlConnection = null;
-        private SqlConnection nrthwndConnection = null;
         private SqlCommandBuilder sqlCommandBuilder = null;
         private SqlDataAdapter sqlDataAdapter = null;
         private SqlCommand sqlCommand = null;
         private DataSet dataSet = null;
-        private bool newRowAdd = false;
-        private bool IsInserted = true;
-        private SqlDataReader sqlDataReader = null;
-        private List<string[]> rows;
         private string combo_value = null;
-        private string date = null;
         private int date_col = 0;
         private int date_row = 0;
-
+        private bool is_empty;
         public goods_form()
         {
             InitializeComponent();
@@ -74,9 +68,7 @@ namespace CourseWork
             try
             {
                 dataSet.Tables["Goods"].Clear();
-
                 sqlDataAdapter.Fill(dataSet, "Goods");
-
                 dataGridView1.DataSource = dataSet.Tables["Goods"];
 
                 for (int i = 0; i < dataGridView1.RowCount; i++)
@@ -84,6 +76,7 @@ namespace CourseWork
                     DataGridViewLinkCell linkCell = new DataGridViewLinkCell();
                     dataGridView1[7, i] = linkCell;
                 }
+
             }
             catch (Exception ex)
             {
@@ -98,20 +91,14 @@ namespace CourseWork
                 if (e.ColumnIndex == 7)
                 {
                     String task = dataGridView1.Rows[e.RowIndex].Cells[7].Value.ToString();
-                    /*
-                     * !!!!!!!!!!!!!ПЕРЕПИСАТЬ УДАЛЕНИЕ ИЗ ТАБЛИЦЫ
-                     * УДАЛЯТЬ ИЗ БД T-SQL - ПОДГРУЖАТЬ с помощью LoadDataGoods();
-                     */
+                   
                     if (task == "Delete")
                     {
-
                         if (MessageBox.Show("Удалить выбранную строку?", "Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                         {
-
                             int rowIndex = e.RowIndex;
                             string id = dataGridView1.Rows[rowIndex].Cells["Id"].Value.ToString();
                             string sqlExec = "DELETE FROM Goods WHERE Id =" + id;
-                            //MessageBox.Show("ID", id);
                             sqlCommandExecute(sqlExec);
 
                             /*
@@ -123,7 +110,7 @@ namespace CourseWork
                             */
                         }
                     }
-
+                    /*
                     else if (task == "Insert")
                     {
 
@@ -149,29 +136,41 @@ namespace CourseWork
 
                         sqlDataAdapter.Update(dataSet, "Goods");
 
-                        newRowAdd = false;
+                       
 
 
                     }
-
+                    */
                     else if (task == "Update")
                     {
+                        for (int i = 1; i < dataGridView1.Columns.Count; i++)
+                        {
+                            if (dataGridView1.Rows[e.RowIndex].Cells[i].Value.ToString() == "")
+                            {
+                                is_empty = true;break;
+                            }
+                            else {is_empty = false;}
+                        }
 
-                        int r = e.RowIndex;
+                        if (is_empty == true)
+                        {
+                            MessageBox.Show("Заполните все значиения строки заполнены!", "Ошибка");
+                        }
+                        else
+                        {
+                            int r = e.RowIndex;
 
+                            dataSet.Tables["Goods"].Rows[r]["Наименование"] = dataGridView1.Rows[r].Cells["Наименование"].Value;
+                            dataSet.Tables["Goods"].Rows[r]["Кол-во"] = dataGridView1.Rows[r].Cells["Кол-во"].Value;
+                            dataSet.Tables["Goods"].Rows[r]["Цена"] = dataGridView1.Rows[r].Cells["Цена"].Value;
+                            dataSet.Tables["Goods"].Rows[r]["Сотрудник"] = dataGridView1.Rows[r].Cells["Сотрудник"].Value;
+                            dataSet.Tables["Goods"].Rows[r]["Дата"] = dataGridView1.Rows[r].Cells["Дата"].Value;
+                            dataSet.Tables["Goods"].Rows[r]["Секция_склада"] = dataGridView1.Rows[r].Cells["Секция_склада"].Value;
 
-                        dataSet.Tables["Goods"].Rows[r]["Наименование"] = dataGridView1.Rows[r].Cells["Наименование"].Value;
-                        dataSet.Tables["Goods"].Rows[r]["Кол-во"] = dataGridView1.Rows[r].Cells["Кол-во"].Value;
-                        dataSet.Tables["Goods"].Rows[r]["Цена"] = dataGridView1.Rows[r].Cells["Цена"].Value;
-                        dataSet.Tables["Goods"].Rows[r]["Сотрудник"] = dataGridView1.Rows[r].Cells["Сотрудник"].Value;
-                        dataSet.Tables["Goods"].Rows[r]["Дата"] = dataGridView1.Rows[r].Cells["Дата"].Value;
-                        dataSet.Tables["Goods"].Rows[r]["Секция_склада"] = dataGridView1.Rows[r].Cells["Секция_склада"].Value;
-
-
-                        sqlDataAdapter.Update(dataSet, "Goods");
-                        dataGridView1.Rows[e.RowIndex].Cells[7].Value = "Delete";
+                            sqlDataAdapter.Update(dataSet, "Goods");
+                            dataGridView1.Rows[e.RowIndex].Cells[7].Value = "Delete";
+                        }
                     }
-
                     LoadDataGoods();
                 }
             }
@@ -244,23 +243,17 @@ namespace CourseWork
                     textBox2.ReadOnly = false;
                     textBox2.Text = "";
                     break;
-
-
             }
-
         }
+
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
             try
             {
-
                 if (combo_value != null)
                 {
                     (dataGridView1.DataSource as DataTable).DefaultView.RowFilter = $"CONVERT({combo_value}, System.String) LIKE '%{textBox2.Text}%'";
-
                 }
-
-
 
             }
             catch (Exception ex)
@@ -269,10 +262,7 @@ namespace CourseWork
             }
         }
 
-        private void label1_Click(object sender, EventArgs e)
-        {
 
-        }
 
         private void textBox2_Click(object sender, EventArgs e)
         {
@@ -286,7 +276,6 @@ namespace CourseWork
         {
             if (e.ColumnIndex == 5 && e.RowIndex != dataGridView1.RowCount - 1)
             {
-
                 date_col = e.ColumnIndex;
                 date_row = e.RowIndex;
                 int x = Cursor.Position.X;
@@ -296,8 +285,6 @@ namespace CourseWork
                 monthCalendar1.Location = new Point(x - formx - 20, y - formy - 20);
                 monthCalendar1.Visible = true;
                 monthCalendar1.Enabled = true;
-                
-
             }
             else
             {

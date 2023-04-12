@@ -136,13 +136,14 @@
             this.label1.Size = new System.Drawing.Size(97, 16);
             this.label1.TabIndex = 7;
             this.label1.Text = "Сортировать по:";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // monthCalendar1
             // 
+            this.monthCalendar1.Enabled = false;
             this.monthCalendar1.Location = new System.Drawing.Point(789, 341);
             this.monthCalendar1.Name = "monthCalendar1";
             this.monthCalendar1.TabIndex = 8;
+            this.monthCalendar1.Visible = false;
             this.monthCalendar1.DateSelected += new System.Windows.Forms.DateRangeEventHandler(this.monthCalendar1_DateSelected);
             // 
             // goods_form

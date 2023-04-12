@@ -22,7 +22,7 @@ namespace CourseWork
         private SqlCommand sqlCommand = null;
         private DataSet dataSet = null;
         private string combo_value = null;
-        private string choosen_date;
+        private bool is_empty;
         private int date_row;
         private int date_col;
         public workers_form()
@@ -161,17 +161,38 @@ namespace CourseWork
 
                     else if (task == "Update")
                     {
-                        int r = e.RowIndex; 
-                     
-                        dataSet.Tables["Workers"].Rows[r]["ФИО"] = dataGridView1.Rows[r].Cells["ФИО"].Value;
-                        dataSet.Tables["Workers"].Rows[r]["Должность"] = dataGridView1.Rows[r].Cells["Должность"].Value;
-                        dataSet.Tables["Workers"].Rows[r]["Тел.номер"] = dataGridView1.Rows[r].Cells["Тел.номер"].Value;
-                        dataSet.Tables["Workers"].Rows[r]["Почта"] = dataGridView1.Rows[r].Cells["Почта"].Value;
-                        dataSet.Tables["Workers"].Rows[r]["Возраст"] = dataGridView1.Rows[r].Cells["Возраст"].Value;
-                        dataSet.Tables["Workers"].Rows[r]["Дата_рождения"] = dataGridView1.Rows[r].Cells["Дата_рождения"].Value;
+                        
+                        for (int i = 1;i < dataGridView1.Columns.Count; i ++ )
+                        {
+                            if (dataGridView1.Rows[e.RowIndex].Cells[i].Value.ToString() == "")
+                            {
+                                is_empty = true;
+                                break;
+                            }
+                            else 
+                            { 
+                                is_empty = false;
+                            }
+                        }
 
-                        sqlDataAdapter.Update(dataSet, "Workers");
-                        dataGridView1.Rows[e.RowIndex].Cells[7].Value = "Delete";
+                        if (is_empty == true)
+                        {
+                            MessageBox.Show("Заполните все значиения строки заполнены!", "Ошибка");
+                        }
+                        else {
+                            int r = e.RowIndex;
+
+                            dataSet.Tables["Workers"].Rows[r]["ФИО"] = dataGridView1.Rows[r].Cells["ФИО"].Value;
+                            dataSet.Tables["Workers"].Rows[r]["Должность"] = dataGridView1.Rows[r].Cells["Должность"].Value;
+                            dataSet.Tables["Workers"].Rows[r]["Тел.номер"] = dataGridView1.Rows[r].Cells["Тел.номер"].Value;
+                            dataSet.Tables["Workers"].Rows[r]["Почта"] = dataGridView1.Rows[r].Cells["Почта"].Value;
+                            dataSet.Tables["Workers"].Rows[r]["Возраст"] = dataGridView1.Rows[r].Cells["Возраст"].Value;
+                            dataSet.Tables["Workers"].Rows[r]["Дата_рождения"] = dataGridView1.Rows[r].Cells["Дата_рождения"].Value;
+
+                            sqlDataAdapter.Update(dataSet, "Workers");
+                            dataGridView1.Rows[e.RowIndex].Cells[7].Value = "Delete";
+                        }
+                        
                     }
 
                     LoadDataWorkers();                
