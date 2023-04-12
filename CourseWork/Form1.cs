@@ -13,7 +13,7 @@ namespace CourseWork
 {
     public partial class Form1 : Form
     {
-       
+        
         public Form1()
         {
             InitializeComponent();
@@ -21,10 +21,13 @@ namespace CourseWork
 
         private void w_button_Click(object sender, EventArgs e)
         {
+
             workers_form wf = new workers_form();
             wf.StartPosition = FormStartPosition.CenterScreen;
             wf.Show();
-             
+
+            
+
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -36,6 +39,8 @@ namespace CourseWork
             goods_form gf = new goods_form();
             gf.StartPosition = FormStartPosition.CenterScreen;
             gf.Show();
+
+            
         }
 
        

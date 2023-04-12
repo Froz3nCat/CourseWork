@@ -115,9 +115,10 @@
             // 
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Items.AddRange(new object[] {
-            "name",
-            "worker",
-            "location"});
+            "-",
+            "Наименованию",
+            "Сотруднику",
+            "Секции склада"});
             this.comboBox1.Location = new System.Drawing.Point(107, 437);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(121, 21);

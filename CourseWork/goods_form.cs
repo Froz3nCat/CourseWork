@@ -29,6 +29,14 @@ namespace CourseWork
         {
             InitializeComponent();
         }
+
+        void sqlCommandExecute(string sql_command)
+        {
+            sqlCommand = sqlConnection.CreateCommand();
+            sqlCommand.CommandText = sql_command;
+            sqlCommand.ExecuteNonQuery();
+
+        }
         private void LoadDataGoods()
         {
             try
@@ -56,16 +64,7 @@ namespace CourseWork
             }
 
         }
-        private void LoadRefresedRows()
-        {
-            try
-            {
-
-            }
-            catch(Exception ex) {
-                
-            }
-        }
+        
         private void ReLoadDataGoods()
         {
             try
@@ -101,14 +100,23 @@ namespace CourseWork
                      */
                     if (task == "Delete")
                     {
+
                         if (MessageBox.Show("Удалить выбранную строку?", "Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                         {
+                            
                             int rowIndex = e.RowIndex;
-
+                            string id = dataGridView1.Rows[rowIndex].Cells["Id"].Value.ToString();
+                            string sqlExec = "DELETE FROM Goods WHERE Id =" + id ;
+                            //MessageBox.Show("ID", id);
+                            sqlCommandExecute(sqlExec);
+                            
+                            /*
                             dataGridView1.Rows.RemoveAt(rowIndex);
 
                             dataSet.Tables["Goods"].Rows[rowIndex].Delete();
                             sqlDataAdapter.Update(dataSet, "Goods");
+
+                            */
                         }
                     }
 
@@ -120,12 +128,12 @@ namespace CourseWork
                         DataRow row = dataSet.Tables["Goods"].NewRow();
 
 
-                        row["name"] = dataGridView1.Rows[rowIndex].Cells["name"].Value;
-                        row["amount"] = dataGridView1.Rows[rowIndex].Cells["amount"].Value;
-                        row["price"] = dataGridView1.Rows[rowIndex].Cells["price"].Value;
-                        row["worker"] = dataGridView1.Rows[rowIndex].Cells["worker"].Value;
-                        row["date"] = dataGridView1.Rows[rowIndex].Cells["date"].Value;
-                        row["location"] = dataGridView1.Rows[rowIndex].Cells["location"].Value;
+                        row["Наименование"] = dataGridView1.Rows[rowIndex].Cells["Наименование"].Value;
+                        row["Кол-во"] = dataGridView1.Rows[rowIndex].Cells["Кол-во"].Value;
+                        row["Цена"] = dataGridView1.Rows[rowIndex].Cells["Цена"].Value;
+                        row["Сотрудник"] = dataGridView1.Rows[rowIndex].Cells["Сотрудник"].Value;
+                        row["Дата"] = dataGridView1.Rows[rowIndex].Cells["Дата"].Value;
+                        row["Секция_склада"] = dataGridView1.Rows[rowIndex].Cells["Секция_склада"].Value;
 
                         dataSet.Tables["Goods"].Rows.Add(row);
 
@@ -148,12 +156,12 @@ namespace CourseWork
                         int r = e.RowIndex;
 
 
-                        dataSet.Tables["Goods"].Rows[r]["name"] = dataGridView1.Rows[r].Cells["name"].Value;
-                        dataSet.Tables["Goods"].Rows[r]["amount"] = dataGridView1.Rows[r].Cells["amount"].Value;
-                        dataSet.Tables["Goods"].Rows[r]["price"] = dataGridView1.Rows[r].Cells["price"].Value;
-                        dataSet.Tables["Goods"].Rows[r]["worker"] = dataGridView1.Rows[r].Cells["worker"].Value;
-                        dataSet.Tables["Goods"].Rows[r]["date"] = dataGridView1.Rows[r].Cells["date"].Value;
-                        dataSet.Tables["Goods"].Rows[r]["location"] = dataGridView1.Rows[r].Cells["location"].Value;
+                        dataSet.Tables["Goods"].Rows[r]["Наименование"] = dataGridView1.Rows[r].Cells["Наименование"].Value;
+                        dataSet.Tables["Goods"].Rows[r]["Кол-во"] = dataGridView1.Rows[r].Cells["Кол-во"].Value;
+                        dataSet.Tables["Goods"].Rows[r]["Цена"] = dataGridView1.Rows[r].Cells["Цена"].Value;
+                        dataSet.Tables["Goods"].Rows[r]["Сотрудник"] = dataGridView1.Rows[r].Cells["Сотрудник"].Value;
+                        dataSet.Tables["Goods"].Rows[r]["Дата"] = dataGridView1.Rows[r].Cells["Дата"].Value;
+                        dataSet.Tables["Goods"].Rows[r]["Секция_склада"] = dataGridView1.Rows[r].Cells["Секция_склада"].Value;
 
 
                         sqlDataAdapter.Update(dataSet, "Goods");
@@ -192,7 +200,7 @@ namespace CourseWork
             sqlConnection.Open();
             
             LoadDataGoods();
-
+            comboBox1.SelectedItem = "-";
             
         }
 
@@ -207,19 +215,27 @@ namespace CourseWork
         }
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
+
             switch(comboBox1.SelectedIndex){
                 case 0:
-                    combo_value = "name";
-                    textBox2.ReadOnly = false;
+                    combo_value = null;
+                    textBox2.ReadOnly = true;
                     textBox2.Text = "";
+                    textBox2.Text = "Введите текст:";
+                    LoadDataGoods();
                     break;
                 case 1:
-                    combo_value = "worker";
+                    combo_value = "Наименование";
                     textBox2.ReadOnly = false;
                     textBox2.Text = "";
                     break;
                 case 2:
-                    combo_value = "location";
+                    combo_value = "Сотрудник";
+                    textBox2.ReadOnly = false;
+                    textBox2.Text = "";
+                    break;
+                case 3:
+                    combo_value = "Секция_склада";
                     textBox2.ReadOnly = false;
                     textBox2.Text = "";
                     break;
@@ -232,19 +248,11 @@ namespace CourseWork
         {
             try
             {
-                
-                if (combo_value == "name") 
-                {
-                    (dataGridView1.DataSource as DataTable).DefaultView.RowFilter = $"name LIKE '%{textBox2.Text}%'";
 
-                }
-                else if (combo_value == "worker")
+                if (combo_value != null)
                 {
-                    (dataGridView1.DataSource as DataTable).DefaultView.RowFilter = $"worker LIKE '%{textBox2.Text}%'";
-                }
-                else if (combo_value == "location")
-                {
-                    (dataGridView1.DataSource as DataTable).DefaultView.RowFilter = $"location LIKE '%{textBox2.Text}%'";
+                    (dataGridView1.DataSource as DataTable).DefaultView.RowFilter = $"CONVERT({combo_value}, System.String) LIKE '%{textBox2.Text}%'";
+
                 }
 
 
