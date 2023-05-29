@@ -199,7 +199,10 @@ namespace CourseWork
         private void goods_form1_Load(object sender, EventArgs e)
         {
 
-            sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=E:\С\CourseWork\CourseWork\workers_database.mdf;Integrated Security=True");
+            sqlConnection = new SqlConnection(
+                @"Data Source=(LocalDB)\MSSQLLocalDB;
+                AttachDbFilename=E:\С\CourseWork\CourseWork\workers_database.mdf;
+                Integrated Security=True");
             sqlConnection.Open();
 
             LoadDataGoods();
@@ -307,6 +310,12 @@ namespace CourseWork
                 MessageBox.Show("Невозможно выбрать дату. Выбранная вами дата еще не наступила.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             
+        }
+
+        private void отчетПоПродажамToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RepFrom form1 = new RepFrom();
+            form1.ShowDialog();
         }
     }
 }

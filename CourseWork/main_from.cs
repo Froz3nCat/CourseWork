@@ -41,5 +41,11 @@ namespace CourseWork
             
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Sell se = new Sell();
+            se.StartPosition = FormStartPosition.CenterScreen;
+            se.Show();
+        }
     }
 }
