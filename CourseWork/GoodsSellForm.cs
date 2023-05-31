@@ -12,11 +12,12 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace CourseWork
 {
-    public partial class Sell : Form
+    public partial class GoodsSellForm : Form
     {
         private SqlConnection sqlConnection = null;
         private SqlCommandBuilder sqlCommandBuilder = null;
         private SqlDataAdapter sqlDataAdapter = null;
+        private SqlCommand sqlCommand = null;   
         private DataSet dataSet = null;
         private string name = null;
         private int amount = 0;
@@ -25,11 +26,22 @@ namespace CourseWork
         private int id = 0;
         private string combo_value = null;
         private DataGridView dt = null;
-        public Sell()
+        public GoodsSellForm()
         {
             InitializeComponent();
         }
+        private void sqlCommandExecute(string sql_command)
+        {
 
+            sqlCommand = new SqlCommand(sql_command, sqlConnection);
+            sqlCommand.ExecuteNonQuery();
+
+        }
+        private void ClearTable()
+        {
+            string clearExec = @"Delete FROM Goods WHERE [Кол-во] <= 0 ";
+            sqlCommandExecute(clearExec);
+        }
         private void Sell_Load(object sender, EventArgs e)
         {
             sqlConnection = new SqlConnection(
@@ -37,7 +49,7 @@ namespace CourseWork
                 AttachDbFilename=E:\С\CourseWork\CourseWork\workers_database.mdf;
                 Integrated Security=True");
             sqlConnection.Open();
-
+            ClearTable();
             LoadDataGoods();
         }
         private void LoadDataGoods()
@@ -53,11 +65,20 @@ namespace CourseWork
                 dataSet = new DataSet();
                 sqlDataAdapter.Fill(dataSet, "Goods");
                 dataGridView1.DataSource = dataSet.Tables["Goods"];
-
                 for (int i = 0; i < dataGridView1.RowCount; i++)
                 {
-                    DataGridViewLinkCell linkCell = new DataGridViewLinkCell();
-                    dataGridView1[7, i] = linkCell;
+                     DataGridViewLinkCell linkCell = new DataGridViewLinkCell();
+                     dataGridView1[7, i] = linkCell;
+                }
+                if (dataGridView1.Rows.Count == 0)
+                {
+                    InfoLabel.Text = "Нет товаров на продажу :(";
+                    InfoLabel.Visible = true;
+                }
+                else
+                {
+                    InfoLabel.Visible = false;
+
                 }
 
             }
@@ -75,14 +96,23 @@ namespace CourseWork
                 dataSet.Tables["Goods"].Clear();
                 sqlDataAdapter.Fill(dataSet, "Goods");
                 dataGridView1.DataSource = dataSet.Tables["Goods"];
-
                 for (int i = 0; i < dataGridView1.RowCount; i++)
                 {
-                    DataGridViewLinkCell linkCell = new DataGridViewLinkCell();
-                    dataGridView1[7, i] = linkCell;
+                     DataGridViewLinkCell linkCell = new DataGridViewLinkCell();
+                     dataGridView1[7, i] = linkCell;
                 }
+                if (dataGridView1.Rows.Count == 0)
+                {
+                    InfoLabel.Text = "Нет товаров на продажу :(";
+                    InfoLabel.Visible = true;
+                }
+                else
+                {
+                    InfoLabel.Visible = false;
 
+                }
             }
+
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -114,6 +144,7 @@ namespace CourseWork
                     goodBye.date = this.GetDate;
                     goodBye.price = this.getPrice;
                     goodBye.Show();
+                    this.Close();
                     sqlConnection.Close();
                     
                 }
@@ -156,7 +187,7 @@ namespace CourseWork
         {
             switch (comboBox1.SelectedIndex)
             {
-                case (0):
+                case 0:
                     combo_value = null;
                     SortTextBox.ReadOnly = true;
                     SortTextBox.Text = "";
@@ -197,14 +228,20 @@ namespace CourseWork
             }
         }
 
-        private void обновитьДанныеToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            LoadDataGoods();
-        }
+        
 
         private void выходToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
         }
+
+        private void обновитьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ReLoadDataGoods();
+            comboBox1.SelectedIndex = 0;
+            SortTextBox.Text = null;
+        }
+
+        
     }
 }

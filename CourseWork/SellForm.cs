@@ -59,22 +59,23 @@ namespace CourseWork
                @"Data Source=(LocalDB)\MSSQLLocalDB;
                 AttachDbFilename=E:\С\CourseWork\CourseWork\workers_database.mdf;
                 Integrated Security=True");
+            
             sqlConnection.Open();
+            
         }
 
         private void SendSold_Click(object sender, EventArgs e)
         {
-            //MessageBox.Show("");
-            try {
+            try { 
                 SoldAmount = Convert.ToInt32(textBox1.Text);
                 price = Convert.ToDouble(textBox2.Text);
                 user = Convert.ToInt32(textBox3.Text); 
                 UserComment = Convert.ToString(CommentTextBox.Text);
                 Convert.ToInt32(textBox3.Text);
-                
+
                 if (SoldAmount > amount)
                 {
-                    MessageBox.Show("Значение превосходт количество остатков товара "+ name+" на складе", "Ошибка", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+                    MessageBox.Show("Значение превосходит количество остатков товара "+ name+" на складе", "Ошибка", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
                     isconverted = false;
                 }
                 else
@@ -100,17 +101,27 @@ namespace CourseWork
                     string sqlExec = "UPDATE Goods SET [Кол-во] =" + OutAmount + "WHERE Id =" + Id.ToString();
                     sqlCommandExecute(sqlExec);
                     sqlCommandExecute(sqlExec2);
-                    DialogResult dialogResult = MessageBox.Show("Желаете продолжить продажу данного товара?", "Внимание", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                    
-                    if (dialogResult == DialogResult.Yes)
-                    {
-                        textBox1.Text = null; textBox2.Text =null;textBox3.Text = null; CommentTextBox.Text = null;
-                        AmountLabel.Text = Convert.ToString(OutAmount); 
-                    }
-                    else
+                    amount = OutAmount;
+                    if (amount ==0)
                     {
                         this.Close();
+                        MessageBox.Show("Исчерпан лимит товара!", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Question);
                     }
+                    else {
+                        DialogResult dialogResult = MessageBox.Show("Желаете продолжить продажу данного товара?", "Внимание", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                        if (dialogResult == DialogResult.Yes)
+                        {
+                            textBox1.Text = null; textBox2.Text = null; textBox3.Text = null; CommentTextBox.Text = null;
+                            AmountLabel.Text = Convert.ToString(OutAmount);
+                        }
+                        else
+                        {
+                            this.Close();
+                            
+                        }
+                    }
+                    
                 }
                 catch (Exception ex)
                 {
@@ -126,6 +137,19 @@ namespace CourseWork
 
            
         
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void SellForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            GoodsSellForm goodsSellForm = new GoodsSellForm();  
+            goodsSellForm.StartPosition = FormStartPosition.CenterScreen;
+            goodsSellForm.Show();
+
         }
     }
 

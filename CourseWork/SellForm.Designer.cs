@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SellForm));
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.NameLabel = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -51,24 +52,24 @@
             // 
             // textBox1
             // 
-            this.textBox1.BackColor = System.Drawing.SystemColors.Window;
-            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox1.Location = new System.Drawing.Point(173, 221);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox1.BackColor = System.Drawing.SystemColors.Control;
+            this.textBox1.Location = new System.Drawing.Point(137, 189);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(5);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(115, 27);
+            this.textBox1.Size = new System.Drawing.Size(215, 27);
             this.textBox1.TabIndex = 0;
             // 
             // NameLabel
             // 
             this.NameLabel.AutoSize = true;
             this.NameLabel.Font = new System.Drawing.Font("Microsoft YaHei", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.NameLabel.Location = new System.Drawing.Point(67, 24);
+            this.NameLabel.Location = new System.Drawing.Point(71, 24);
             this.NameLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.NameLabel.Name = "NameLabel";
-            this.NameLabel.Size = new System.Drawing.Size(97, 20);
+            this.NameLabel.Size = new System.Drawing.Size(93, 20);
             this.NameLabel.TabIndex = 1;
-            this.NameLabel.Text = " GoodName";
+            this.NameLabel.Text = "GoodName";
             // 
             // label2
             // 
@@ -127,11 +128,14 @@
             // 
             // SendSold
             // 
-            this.SendSold.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.SendSold.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.SendSold.BackColor = System.Drawing.Color.WhiteSmoke;
             this.SendSold.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.SendSold.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.SendSold.Location = new System.Drawing.Point(128, 336);
-            this.SendSold.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.SendSold.Location = new System.Drawing.Point(67, 339);
+            this.SendSold.Margin = new System.Windows.Forms.Padding(5);
             this.SendSold.Name = "SendSold";
             this.SendSold.Size = new System.Drawing.Size(237, 41);
             this.SendSold.TabIndex = 7;
@@ -141,8 +145,10 @@
             // 
             // InsertionAmountLabel
             // 
+            this.InsertionAmountLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.InsertionAmountLabel.AutoSize = true;
-            this.InsertionAmountLabel.Location = new System.Drawing.Point(14, 228);
+            this.InsertionAmountLabel.BackColor = System.Drawing.Color.Transparent;
+            this.InsertionAmountLabel.Location = new System.Drawing.Point(137, 164);
             this.InsertionAmountLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.InsertionAmountLabel.Name = "InsertionAmountLabel";
             this.InsertionAmountLabel.Size = new System.Drawing.Size(158, 20);
@@ -152,7 +158,8 @@
             // InsertionPriceLabel
             // 
             this.InsertionPriceLabel.AutoSize = true;
-            this.InsertionPriceLabel.Location = new System.Drawing.Point(14, 258);
+            this.InsertionPriceLabel.BackColor = System.Drawing.Color.Transparent;
+            this.InsertionPriceLabel.Location = new System.Drawing.Point(8, 220);
             this.InsertionPriceLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.InsertionPriceLabel.Name = "InsertionPriceLabel";
             this.InsertionPriceLabel.Size = new System.Drawing.Size(274, 20);
@@ -162,7 +169,9 @@
             // InsertionUserLabel
             // 
             this.InsertionUserLabel.AutoSize = true;
-            this.InsertionUserLabel.Location = new System.Drawing.Point(14, 196);
+            this.InsertionUserLabel.BackColor = System.Drawing.Color.Transparent;
+            this.InsertionUserLabel.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.InsertionUserLabel.Location = new System.Drawing.Point(8, 164);
             this.InsertionUserLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.InsertionUserLabel.Name = "InsertionUserLabel";
             this.InsertionUserLabel.Size = new System.Drawing.Size(119, 20);
@@ -172,20 +181,20 @@
             // 
             // textBox2
             // 
-            this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox2.Location = new System.Drawing.Point(287, 251);
-            this.textBox2.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.textBox2.BackColor = System.Drawing.SystemColors.Control;
+            this.textBox2.Location = new System.Drawing.Point(12, 245);
+            this.textBox2.Margin = new System.Windows.Forms.Padding(5);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(209, 27);
+            this.textBox2.Size = new System.Drawing.Size(341, 27);
             this.textBox2.TabIndex = 11;
             // 
             // textBox3
             // 
-            this.textBox3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox3.Location = new System.Drawing.Point(132, 189);
-            this.textBox3.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.textBox3.BackColor = System.Drawing.SystemColors.Control;
+            this.textBox3.Location = new System.Drawing.Point(12, 189);
+            this.textBox3.Margin = new System.Windows.Forms.Padding(5);
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(97, 27);
+            this.textBox3.Size = new System.Drawing.Size(115, 27);
             this.textBox3.TabIndex = 12;
             // 
             // label1
@@ -213,7 +222,8 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(14, 289);
+            this.label5.BackColor = System.Drawing.Color.Transparent;
+            this.label5.Location = new System.Drawing.Point(8, 277);
             this.label5.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(211, 20);
@@ -223,16 +233,21 @@
             // 
             // CommentTextBox
             // 
-            this.CommentTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.CommentTextBox.Location = new System.Drawing.Point(225, 282);
-            this.CommentTextBox.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.CommentTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.CommentTextBox.BackColor = System.Drawing.SystemColors.Control;
+            this.CommentTextBox.Location = new System.Drawing.Point(12, 302);
+            this.CommentTextBox.Margin = new System.Windows.Forms.Padding(5);
             this.CommentTextBox.Name = "CommentTextBox";
-            this.CommentTextBox.Size = new System.Drawing.Size(271, 27);
+            this.CommentTextBox.Size = new System.Drawing.Size(340, 27);
             this.CommentTextBox.TabIndex = 16;
             // 
             // groupBox1
             // 
-            this.groupBox1.BackColor = System.Drawing.SystemColors.Info;
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.BackColor = System.Drawing.Color.PeachPuff;
+            this.groupBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.groupBox1.Controls.Add(this.PriceLabel);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.label1);
@@ -243,20 +258,24 @@
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Cursor = System.Windows.Forms.Cursors.Help;
             this.groupBox1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.groupBox1.Font = new System.Drawing.Font("Microsoft YaHei", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.groupBox1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(484, 117);
+            this.groupBox1.Size = new System.Drawing.Size(341, 117);
             this.groupBox1.TabIndex = 17;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Информация о товаре:";
+            this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
             // SellForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(504, 386);
+            this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.ClientSize = new System.Drawing.Size(364, 386);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.CommentTextBox);
             this.Controls.Add(this.label5);
@@ -268,9 +287,12 @@
             this.Controls.Add(this.SendSold);
             this.Controls.Add(this.textBox1);
             this.Font = new System.Drawing.Font("Microsoft YaHei", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.Margin = new System.Windows.Forms.Padding(5);
+            this.MaximumSize = new System.Drawing.Size(642, 427);
+            this.MinimumSize = new System.Drawing.Size(380, 425);
             this.Name = "SellForm";
             this.Text = "Продажа товара";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SellForm_FormClosed);
             this.Load += new System.EventHandler(this.GoodBye_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

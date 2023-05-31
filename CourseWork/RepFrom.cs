@@ -11,10 +11,12 @@ using System.Windows.Forms;
 
 namespace CourseWork
 {
-
+    
     public partial class RepFrom : Form
     {
-    
+        
+        public bool IsDeveloper = false;
+        public string ConnectionString = null;
         private SqlConnection sqlConnection = null;
         private SqlCommandBuilder sqlCommandBuilder = null;
         private SqlDataAdapter sqlDataAdapter = null;
@@ -23,6 +25,21 @@ namespace CourseWork
         public RepFrom()
         {
             InitializeComponent();
+        }
+
+        private void ExecCommand(string command)
+        {
+            try {
+                sqlCommand = new SqlCommand();
+                sqlCommand.CommandText = command;
+                sqlCommand.Connection = sqlConnection;
+                sqlCommand.ExecuteNonQuery();
+            }
+            catch(Exception ex) 
+            {
+                MessageBox.Show(ex.Message, "Ошибка");
+            }
+            
         }
         private void LoadDataSold()
         {
@@ -39,18 +56,39 @@ namespace CourseWork
             {
                 MessageBox.Show(ex.Message, "ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;
-                AttachDbFilename=E:\С\CourseWork\CourseWork\workers_database.mdf;
-                Integrated Security=True");
+            sqlConnection = new SqlConnection(ConnectionString);
             sqlConnection.Open();
             LoadDataSold();
+            
         }
 
-       
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            DialogResult dialogresult = MessageBox.Show("Вы собираетесь отправить SQL-запрос, при неккоректном запросе, вернуть предыдущие значения таблицы будет невозможно",
+                "Внимание", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (dialogresult == DialogResult.Yes)
+            {
+                IsDeveloper = true;
+            }
+            if(IsDeveloper)
+            {
+                string Exec = textBox1.Text.ToString();
+                ExecCommand(Exec);
+                IsDeveloper = false;
+            }
+            
+            
+        }
+
+        
     }
 }

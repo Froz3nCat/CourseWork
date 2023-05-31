@@ -12,8 +12,11 @@ using System.Xml.Linq;
 
 namespace CourseWork
 {
-    public partial class goods_form : Form
+    public partial class GoodsForm : Form
     {
+        private string ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;
+                AttachDbFilename=E:\С\CourseWork\CourseWork\workers_database.mdf;
+                Integrated Security=True";
         private SqlConnection sqlConnection = null;
         private SqlCommandBuilder sqlCommandBuilder = null;
         private SqlDataAdapter sqlDataAdapter = null;
@@ -22,17 +25,62 @@ namespace CourseWork
         private string combo_value = null;
         private int date_col = 0;
         private int date_row = 0;
-        private bool is_empty;
-        public goods_form()
+        private string SqlTableName = "Goods";
+        private string[] TableHeaders = { "Наименование", "Кол-во", "Цена", "Сотрудник", "Дата", "Секция_склада" };
+        
+
+        public GoodsForm()
         {
             InitializeComponent();
         }
-
-        void sqlCommandExecute(string sql_command)
+        private void UpdateRow(int r)
         {
-            sqlCommand = sqlConnection.CreateCommand();
-            sqlCommand.CommandText = sql_command;
-            sqlCommand.ExecuteNonQuery();
+            for (int i = 0; i < TableHeaders.Length; i++)
+            {
+                dataSet.Tables[SqlTableName].Rows[r][TableHeaders[i]] = dataGridView1.Rows[r].Cells[TableHeaders[i]].Value;
+            }
+            sqlDataAdapter.Update(dataSet, SqlTableName);
+            dataGridView1.Rows[r].Cells[7].Value = "Delete";
+        }
+
+        private bool RowCompleded(int r)
+        {
+            for (int i = 1; i < dataGridView1.Columns.Count; i++)
+            {
+                if (dataGridView1.Rows[r].Cells[i].Value.ToString() == "")
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private bool IsUser(string id)
+        {
+            string ExecCommand = @"SELECT * FROM Workers WHERE Id = "+id ;
+            return sqlCommandExecute(ExecCommand);
+        }
+
+        private bool sqlCommandExecute(string sql_command)
+        {
+            try
+            {
+                sqlCommand = sqlConnection.CreateCommand();
+                sqlCommand.CommandText = sql_command;
+
+                int ComparedStrings = sqlCommand.ExecuteNonQuery();
+                if (ComparedStrings > 0)
+                {
+                    return true;
+                }
+                return false;
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
 
         }
         private void LoadDataGoods()
@@ -46,14 +94,24 @@ namespace CourseWork
                 sqlCommandBuilder.GetDeleteCommand();
 
                 dataSet = new DataSet();
-                sqlDataAdapter.Fill(dataSet, "Goods");
-                dataGridView1.DataSource = dataSet.Tables["Goods"];
-
+                sqlDataAdapter.Fill(dataSet, SqlTableName);
+                dataGridView1.DataSource = dataSet.Tables[SqlTableName];
                 for (int i = 0; i < dataGridView1.RowCount; i++)
                 {
                     DataGridViewLinkCell linkCell = new DataGridViewLinkCell();
                     dataGridView1[7, i] = linkCell;
                 }
+                if (dataGridView1.Rows.Count == 1)
+                {
+                    InfoLabel.Text = "Склад пуст:(\nСкорее добавим что-нибудь!";
+                    InfoLabel.Visible = true;
+                }
+                else
+                {
+                    InfoLabel.Visible = false;
+                }
+
+
 
             }
             catch (Exception ex)
@@ -67,16 +125,25 @@ namespace CourseWork
         {
             try
             {
-                dataSet.Tables["Goods"].Clear();
-                sqlDataAdapter.Fill(dataSet, "Goods");
-                dataGridView1.DataSource = dataSet.Tables["Goods"];
-
+                dataSet.Tables[SqlTableName].Clear();
+                sqlDataAdapter.Fill(dataSet, SqlTableName);
+                dataGridView1.DataSource = dataSet.Tables[SqlTableName];
+                MessageBox.Show(dataGridView1.Rows.Count.ToString());
                 for (int i = 0; i < dataGridView1.RowCount; i++)
                 {
                     DataGridViewLinkCell linkCell = new DataGridViewLinkCell();
                     dataGridView1[7, i] = linkCell;
                 }
+                if (dataGridView1.Rows.Count == 1)
+                {
+                    InfoLabel.Text = "Склад пуст:(\nСкорее добавим что-нибудь!";
+                    InfoLabel.Visible = true;
+                }
+                else
+                {
+                    InfoLabel.Visible = false;
 
+                }
             }
             catch (Exception ex)
             {
@@ -91,88 +158,33 @@ namespace CourseWork
                 if (e.ColumnIndex == 7)
                 {
                     String task = dataGridView1.Rows[e.RowIndex].Cells[7].Value.ToString();
-                   
+                    int rowIndex = e.RowIndex;
+
                     if (task == "Delete")
                     {
-                        if (MessageBox.Show("Удалить выбранную строку?", "Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        DialogResult dialogResult = MessageBox.Show("Удалить выбранную строку?", "Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Question); 
+                        if (dialogResult == DialogResult.Yes)
                         {
-                            int rowIndex = e.RowIndex;
                             string id = dataGridView1.Rows[rowIndex].Cells["Id"].Value.ToString();
                             string sqlExec = "DELETE FROM Goods WHERE Id =" + id;
                             sqlCommandExecute(sqlExec);
-
-                            /*
-                            dataGridView1.Rows.RemoveAt(rowIndex);
-
-                            dataSet.Tables["Goods"].Rows[rowIndex].Delete();
-                            sqlDataAdapter.Update(dataSet, "Goods");
-
-                            */
                         }
                     }
-                    /*
-                    else if (task == "Insert")
-                    {
 
-                        int rowIndex = dataGridView1.Rows.Count - 2;
-
-                        DataRow row = dataSet.Tables["Goods"].NewRow();
-
-
-                        row["Наименование"] = dataGridView1.Rows[rowIndex].Cells["Наименование"].Value;
-                        row["Кол-во"] = dataGridView1.Rows[rowIndex].Cells["Кол-во"].Value;
-                        row["Цена"] = dataGridView1.Rows[rowIndex].Cells["Цена"].Value;
-                        row["Сотрудник"] = dataGridView1.Rows[rowIndex].Cells["Сотрудник"].Value;
-                        row["Дата"] = dataGridView1.Rows[rowIndex].Cells["Дата"].Value;
-                        row["Секция_склада"] = dataGridView1.Rows[rowIndex].Cells["Секция_склада"].Value;
-
-                        dataSet.Tables["Goods"].Rows.Add(row);
-
-                        dataSet.Tables["Goods"].Rows.RemoveAt(dataSet.Tables["Goods"].Rows.Count - 2);
-
-                        //dataGridView1.Rows.RemoveAt(dataGridView1.Rows.Count - 2);
-
-                        dataGridView1.Rows[e.RowIndex].Cells[7].Value = "Delete";
-
-                        sqlDataAdapter.Update(dataSet, "Goods");
-
-                       
-
-
-                    }
-                    */
                     else if (task == "Update")
                     {
-                        for (int i = 1; i < dataGridView1.Columns.Count; i++)
+                        if (RowCompleded(rowIndex))
                         {
-                            if (dataGridView1.Rows[e.RowIndex].Cells[i].Value.ToString() == "")
-                            {
-                                is_empty = true;break;
-                            }
-                            else {is_empty = false;}
-                        }
-
-                        if (is_empty == true)
-                        {
-                            MessageBox.Show("Заполните все значиения строки заполнены!", "Ошибка");
+                                UpdateRow(rowIndex);     
                         }
                         else
                         {
-                            int r = e.RowIndex;
-
-                            dataSet.Tables["Goods"].Rows[r]["Наименование"] = dataGridView1.Rows[r].Cells["Наименование"].Value;
-                            dataSet.Tables["Goods"].Rows[r]["Кол-во"] = dataGridView1.Rows[r].Cells["Кол-во"].Value;
-                            dataSet.Tables["Goods"].Rows[r]["Цена"] = dataGridView1.Rows[r].Cells["Цена"].Value;
-                            dataSet.Tables["Goods"].Rows[r]["Сотрудник"] = dataGridView1.Rows[r].Cells["Сотрудник"].Value;
-                            dataSet.Tables["Goods"].Rows[r]["Дата"] = dataGridView1.Rows[r].Cells["Дата"].Value;
-                            dataSet.Tables["Goods"].Rows[r]["Секция_склада"] = dataGridView1.Rows[r].Cells["Секция_склада"].Value;
-
-                            sqlDataAdapter.Update(dataSet, "Goods");
-                            dataGridView1.Rows[e.RowIndex].Cells[7].Value = "Delete";
+                            MessageBox.Show("Заполните все значиения строки заполнены!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
                     LoadDataGoods();
                 }
+           
             }
             catch (Exception ex)
             {
@@ -198,15 +210,17 @@ namespace CourseWork
 
         private void goods_form1_Load(object sender, EventArgs e)
         {
-
-            sqlConnection = new SqlConnection(
-                @"Data Source=(LocalDB)\MSSQLLocalDB;
-                AttachDbFilename=E:\С\CourseWork\CourseWork\workers_database.mdf;
-                Integrated Security=True");
-            sqlConnection.Open();
-
-            LoadDataGoods();
-            comboBox1.SelectedItem = "-";
+            try 
+            {
+                sqlConnection = new SqlConnection(ConnectionString);
+                sqlConnection.Open();
+                LoadDataGoods();
+                comboBox1.SelectedItem = "-";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
         }
 
@@ -218,10 +232,10 @@ namespace CourseWork
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
+            sqlConnection.Close();
         }
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-
             switch (comboBox1.SelectedIndex)
             {
                 case 0:
@@ -265,11 +279,9 @@ namespace CourseWork
             }
         }
 
-
-
         private void textBox2_Click(object sender, EventArgs e)
         {
-            if (textBox2.ReadOnly == true)
+            if (textBox2.ReadOnly)
             {
                 MessageBox.Show("Выберите критерии сортировки", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
@@ -281,11 +293,13 @@ namespace CourseWork
             {
                 date_col = e.ColumnIndex;
                 date_row = e.RowIndex;
+
                 int x = Cursor.Position.X;
                 int y = Cursor.Position.Y;
-                int formx = this.Location.X;
-                int formy = this.Location.Y;
-                monthCalendar1.Location = new Point(x - formx - 20, y - formy - 20);
+                int FormX = this.Location.X;
+                int FormY = this.Location.Y;
+
+                monthCalendar1.Location = new Point(x - FormX - 20, y - FormY - 20);
                 monthCalendar1.Visible = true;
                 monthCalendar1.Enabled = true;
             }
@@ -314,8 +328,23 @@ namespace CourseWork
 
         private void отчетПоПродажамToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RepFrom form1 = new RepFrom();
-            form1.ShowDialog();
+            RepFrom ReportForm = new RepFrom();
+            ReportForm.ConnectionString = GetConnection;
+            ReportForm.ShowDialog();
+
         }
+
+        private string GetConnection
+        {
+            get { return ConnectionString; }
+            set { ConnectionString = value; }
+        }
+
+        private void dataGridView1_UserAddedRow(object sender, DataGridViewRowEventArgs e)
+        {
+            InfoLabel.Visible = false;
+        }
+
+        
     }
 }

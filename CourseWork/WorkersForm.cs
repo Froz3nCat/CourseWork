@@ -13,36 +13,60 @@ using System.Windows.Forms;
 
 namespace CourseWork
 {
-    public partial class workers_form : Form
+    public partial class WorkersForm : Form
     {
-     
-        private SqlConnection sqlConnection = null; //о
+
+        private string ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=E:\С\CourseWork\CourseWork\workers_database.mdf;Integrated Security=True";
+        private SqlConnection sqlConnection = null; 
         private SqlCommandBuilder sqlCommandBuilder = null;
         private SqlDataAdapter sqlDataAdapter = null;
         private SqlCommand sqlCommand = null;
         private DataSet dataSet = null;
-        private string combo_value = null;
+        
+        private string ComboValue = null;
         private bool is_empty;
         private int date_row;
         private int date_col;
-        public workers_form()
+
+        private string SqlTableName = "Workers";
+        private string[] TableHeaders = { "ФИО", "Должность", "Тел.номер", "Почта", "Возраст", "Дата_рождения" };
+        public WorkersForm()
         {
             InitializeComponent();
         }
 
-        void sqlCommandExecute(string sql_command)
+        private bool sqlCommandExecute(string sql_command)
         {
             try
             {
                 sqlCommand = sqlConnection.CreateCommand();
                 sqlCommand.CommandText = sql_command;
-                sqlCommand.ExecuteNonQuery();
-            }
 
-            catch(Exception ex) {
+                int ComparedStrings = sqlCommand.ExecuteNonQuery();
+                if (ComparedStrings > 0)
+                {
+                    return true;
+                }
+                return false;
+
+            }
+            catch (Exception ex)
+            {
                 MessageBox.Show(ex.Message, "ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
             }
 
+        }
+        private bool RowCompleded(int r)
+        {
+            for (int i = 1; i < dataGridView1.Columns.Count; i++)
+            {
+                if (dataGridView1.Rows[r].Cells[i].Value.ToString() == "")
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         private void LoadDataWorkers()
@@ -55,8 +79,8 @@ namespace CourseWork
                 sqlCommandBuilder.GetUpdateCommand();
                 sqlCommandBuilder.GetDeleteCommand();
                 dataSet = new DataSet();
-                sqlDataAdapter.Fill(dataSet, "Workers");
-                dataGridView1.DataSource = dataSet.Tables["Workers"];
+                sqlDataAdapter.Fill(dataSet, SqlTableName);
+                dataGridView1.DataSource = dataSet.Tables[SqlTableName];
                 
                 for(int i = 0; i< dataGridView1.RowCount; i++)
                 {
@@ -76,9 +100,9 @@ namespace CourseWork
         {
             try
             {
-                dataSet.Tables["Workers"].Clear();  
-                sqlDataAdapter.Fill(dataSet, "Workers");
-                dataGridView1.DataSource = dataSet.Tables["Workers"];
+                dataSet.Tables[SqlTableName].Clear();  
+                sqlDataAdapter.Fill(dataSet, SqlTableName);
+                dataGridView1.DataSource = dataSet.Tables[SqlTableName];
 
                 for (int i = 0; i < dataGridView1.RowCount; i++)
                 {
@@ -96,15 +120,30 @@ namespace CourseWork
 
         private void workers_form_Load(object sender, EventArgs e)
         {
-            
-            sqlConnection = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=E:\С\CourseWork\CourseWork\workers_database.mdf;Integrated Security=True");
-            sqlConnection.Open();
-            LoadDataWorkers();
+            try {
+                sqlConnection = new SqlConnection(ConnectionString);
+                sqlConnection.Open();
+                LoadDataWorkers();
 
-            comboBox1.SelectedItem = "-";
-            textBox2.ReadOnly = true;
-
+                comboBox1.SelectedItem = "-";
+                textBox2.ReadOnly = true;
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
+
+        private void UpdateByDataSet(int r)
+        {
+            for (int i = 0; i < TableHeaders.Length; i++)
+            {
+                dataSet.Tables[SqlTableName].Rows[r][TableHeaders[i]] = dataGridView1.Rows[r].Cells[TableHeaders[i]].Value;
+            }
+            sqlDataAdapter.Update(dataSet, SqlTableName);
+            dataGridView1.Rows[r].Cells[7].Value = "Delete";
+        }
+
         private void обновитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ReLoadDataWorkers();
@@ -117,82 +156,28 @@ namespace CourseWork
                 if(e.ColumnIndex == 7)
                 {
                     String task = dataGridView1.Rows[e.RowIndex].Cells[7].Value.ToString();
+                    int rowIndex = e.RowIndex;
 
                     if (task == "Delete")
                     {
                         if (MessageBox.Show("Удалить выбранную строку?", "Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                        {
-                            int rowIndex = e.RowIndex;
+                        {     
                             string id = dataGridView1.Rows[rowIndex].Cells["Id"].Value.ToString();
                             string sqlExec = "DELETE FROM Workers WHERE Id =" + id;
-                            
                             sqlCommandExecute(sqlExec);
                         }
                     }
-                    /*
-                    else if (task == "Insert")
-                    {
-
-                        int rowIndex = dataGridView1.Rows.Count - 2;
-
-                        DataRow row = dataSet.Tables["Workers"].NewRow();
-
-                        row["ФИО"] = dataGridView1.Rows[rowIndex].Cells["ФИО"].Value;
-                        row["Должность"] = dataGridView1.Rows[rowIndex].Cells["Должность"].Value;
-                        row["Тел.номер"] = dataGridView1.Rows[rowIndex].Cells["Тел.номер"].Value;
-                        row["Почта"] = dataGridView1.Rows[rowIndex].Cells["Почта"].Value;
-                        row["Возраст"] = dataGridView1.Rows[rowIndex].Cells["Возраст"].Value;
-                        row["Дата_рождения"] = dataGridView1.Rows[rowIndex].Cells["Дата_рождения"].Value;
-
-                        dataSet.Tables["Workers"].Rows.Add(row);
-
-                        dataSet.Tables["Workers"].Rows.RemoveAt(dataSet.Tables["Workers"].Rows.Count - 2);
-
-                        //dataGridView1.Rows.RemoveAt(dataGridView1.Rows.Count - 2);
-
-                        dataGridView1.Rows[e.RowIndex].Cells[7].Value = "Delete";
-
-                        sqlDataAdapter.Update(dataSet, "Workers");
-
-                        
-         
-                    }
-                    */
 
                     else if (task == "Update")
                     {
-                        
-                        for (int i = 1;i < dataGridView1.Columns.Count; i ++ )
+                        if (RowCompleded(rowIndex))
                         {
-                            if (dataGridView1.Rows[e.RowIndex].Cells[i].Value.ToString() == "")
-                            {
-                                is_empty = true;
-                                break;
-                            }
-                            else 
-                            { 
-                                is_empty = false;
-                            }
+                            UpdateByDataSet(rowIndex);
                         }
-
-                        if (is_empty == true)
+                        else
                         {
-                            MessageBox.Show("Заполните все значиения строки заполнены!", "Ошибка");
+                            MessageBox.Show("Заполните все значиения строки заполнены!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
-                        else {
-                            int r = e.RowIndex;
-
-                            dataSet.Tables["Workers"].Rows[r]["ФИО"] = dataGridView1.Rows[r].Cells["ФИО"].Value;
-                            dataSet.Tables["Workers"].Rows[r]["Должность"] = dataGridView1.Rows[r].Cells["Должность"].Value;
-                            dataSet.Tables["Workers"].Rows[r]["Тел.номер"] = dataGridView1.Rows[r].Cells["Тел.номер"].Value;
-                            dataSet.Tables["Workers"].Rows[r]["Почта"] = dataGridView1.Rows[r].Cells["Почта"].Value;
-                            dataSet.Tables["Workers"].Rows[r]["Возраст"] = dataGridView1.Rows[r].Cells["Возраст"].Value;
-                            dataSet.Tables["Workers"].Rows[r]["Дата_рождения"] = dataGridView1.Rows[r].Cells["Дата_рождения"].Value;
-
-                            sqlDataAdapter.Update(dataSet, "Workers");
-                            dataGridView1.Rows[e.RowIndex].Cells[7].Value = "Delete";
-                        }
-                        
                     }
 
                     LoadDataWorkers();                
@@ -246,29 +231,29 @@ namespace CourseWork
             switch (comboBox1.SelectedIndex)
             {
                 case 0:
-                    combo_value = null;
+                    ComboValue = null;
                     textBox2.ReadOnly = true;
                     textBox2.Text = "";
                     textBox2.Text = "Введите текст:";
                     LoadDataWorkers();
                     break;
                 case 1:
-                    combo_value = "Id";
+                    ComboValue = "Id";
                     textBox2.ReadOnly = false;
                     textBox2.Text = "";
                     break;
                 case 2:
-                    combo_value = "ФИО";
+                    ComboValue = "ФИО";
                     textBox2.ReadOnly = false;
                     textBox2.Text = "";
                     break;
                 case 3:
-                    combo_value = "Должность";
+                    ComboValue = "Должность";
                     textBox2.ReadOnly = false;
                     textBox2.Text = "";
                     break;
                 case 4:
-                    combo_value = "Возраст";
+                    ComboValue = "Возраст";
                     textBox2.ReadOnly = false;
                     textBox2.Text = "";
                     break;
@@ -278,9 +263,9 @@ namespace CourseWork
         {
             try
             {
-                if (combo_value != null)
+                if (ComboValue != null)
                 {
-                    (dataGridView1.DataSource as DataTable).DefaultView.RowFilter = $"CONVERT({combo_value}, System.String) LIKE '%{textBox2.Text}%'";
+                    (dataGridView1.DataSource as DataTable).DefaultView.RowFilter = $"CONVERT({ComboValue}, System.String) LIKE '%{textBox2.Text}%'";
                 }
             }
             catch (Exception ex)
@@ -339,6 +324,11 @@ namespace CourseWork
             {
                 MessageBox.Show("Невозможно выбрать дату. Выбранная вами дата еще не наступила.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
