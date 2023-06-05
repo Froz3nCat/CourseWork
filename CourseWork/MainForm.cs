@@ -26,20 +26,16 @@ namespace CourseWork
 
         private void инофрмацияОПрограммеToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(" \"Inventory Manager\"\r\n" +
-                "Разработчик: Азаматов Дмитрий Алексеевич\r\n" +
-                "Студент Группы ПИМ-21-1\r\n", "Курсовой проект",
-                MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            MessageBox.Show(" \"Inventory Manager\"\r\n\n" +
+                "\tРазработчик: Азаматов Дмитрий Алексеевич\r\n" +
+                "\tСтудент группы ПИМ-21-1\r\n"+
+                "\tМининский университет 2023", "Курсовой проект",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void выходToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
-        }
-
-        private void chart1_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void GoodsOpenLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -61,16 +57,6 @@ namespace CourseWork
             GoodsSellForm se = new GoodsSellForm();
             se.StartPosition = FormStartPosition.CenterScreen;
             se.Show();
-        }
-
-        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
-
-        }
-
-        private void pictureBox2_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

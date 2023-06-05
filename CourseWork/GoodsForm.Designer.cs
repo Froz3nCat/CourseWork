@@ -58,7 +58,7 @@
             this.menuStrip1.Size = new System.Drawing.Size(884, 24);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
-            // 
+          // 
             // menuToolStripMenuItem
             // 
             this.menuToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -214,7 +214,6 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "GoodsForm";
             this.Text = "Учёт товаров на складе";
-           
             this.Load += new System.EventHandler(this.goods_form1_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

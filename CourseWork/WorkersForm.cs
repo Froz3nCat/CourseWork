@@ -22,9 +22,8 @@ namespace CourseWork
         private SqlDataAdapter sqlDataAdapter = null;
         private SqlCommand sqlCommand = null;
         private DataSet dataSet = null;
-        
+
         private string ComboValue = null;
-        private bool is_empty;
         private int date_row;
         private int date_col;
 
@@ -134,14 +133,15 @@ namespace CourseWork
             }
         }
 
-        private void UpdateByDataSet(int r)
+        private void LocalUpdate(int IndexOfRow)
         {
             for (int i = 0; i < TableHeaders.Length; i++)
             {
-                dataSet.Tables[SqlTableName].Rows[r][TableHeaders[i]] = dataGridView1.Rows[r].Cells[TableHeaders[i]].Value;
+                dataSet.Tables[SqlTableName].Rows[IndexOfRow][TableHeaders[i]] = dataGridView1.Rows[IndexOfRow].Cells[TableHeaders[i]].Value;
             }
             sqlDataAdapter.Update(dataSet, SqlTableName);
-            dataGridView1.Rows[r].Cells[7].Value = "Delete";
+
+            dataGridView1.Rows[IndexOfRow].Cells[7].Value = "Delete";
         }
 
         private void обновитьToolStripMenuItem_Click(object sender, EventArgs e)
@@ -172,7 +172,7 @@ namespace CourseWork
                     {
                         if (RowCompleded(rowIndex))
                         {
-                            UpdateByDataSet(rowIndex);
+                            LocalUpdate(rowIndex);
                         }
                         else
                         {
